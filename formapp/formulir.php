@@ -1,35 +1,31 @@
 <?php
 require"functions.php";
+$id = $_GET['id'];
+$userId = $_GET['userId'];
+$judul = $_GET['judul'];
 
-$jawaban = false;
+if(!isset($id) || !isset($judul)){
 
-if(isset($_POST["jawab"])){
+    echo "<script>
+    
+        alert('Fromulir Belum di buat, anda harus membuat formulir dahulu!!');
+        window.location.href='createform.php';
 
-    //pertanyaan
-    $q1 = $_POST["q1"];
-    $q2 = $_POST["q2"];
-    $q3 = $_POST["q3"];
-    $q4 = $_POST["q4"];
-
-    $insertQ = "INSERT INTO question VALUES('','$q1','$q2','$q3','$q4')";
-    $result = mysqli_query($conn,"$insertQ");
-
-    //jawaban
-    $j1 = $_POST["j1"];
-    $j2 = $_POST["j2"];
-    $j3 = $_POST["j3"];
-    $j4 = $_POST["j4"];
-
-    $insertJ = "INSERT INTO question VALUES('','$j1','$j2','$j3','$j4')";
-    $result = mysqli_query($conn,"$insertJ");
-
-    if(mysqli_affected_rows($conn)){
-        header("Location: respon.php");
-        exit;
-    }
-
+    </script>";
 }
+$jumlah ="";
+if(isset($_POST['tambah'])){
+    $jumlah = $_POST['jumlah'];
+}
+if(isset($_POST["submit"])){
 
+    $question = $_POST['question'];
+    foreach($question as $q):
+        $qdb = mysqli_query($conn,"INSERT INTO question VALUES('','$id','$q')");
+    endforeach;
+
+    header("LOCATION:respon.php?id=$id&judul=$judul&userId=$userId");
+}
 
 
 ?>
@@ -45,41 +41,28 @@ if(isset($_POST["jawab"])){
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <title>Document</title>
 </head>
-<body>
-    <?php if(isset($success)) : ?>
-        <div class="alert alert-primary" role="alert">
-            Data Berhasil Di Jawab!
-         </div>
-    <?php endif; ?>
-    <h2>Isikan Formulir</h2>
-
+<body class="bg-primary text-light">
+    <h1 class="text-center">Isikan Formulir</h1>
     <form action="" method="POST">
-        
-        <div class="form-floating" style="width: 250px; margin-bottom:30px ;">
-            <div>
-                <label for="p1"><?= $_POST["q1"]; ?></label>
-                <input id="p1" class="form-control" type="text" name="j1"  placeholder="Jawab" required>
-            </div>
-        </div>
-        <div class="form-floating" style="width: 250px; margin-bottom:30px ;">
-            <div>
-                <label for="p2"><?= $_POST["q2"]; ?></label>
-                <input id="p2" class="form-control" type="text" name="j2" placeholder="Jawab" required>
-            </div>
-        </div>
-        <div class="form-floating" style="width: 250px; margin-bottom:30px ;">
-            <div>
-                <label for="p3"><?= $_POST["q3"]; ?></label>
-                <input id="p3" class="form-control" type="text" name="j3"  placeholder="Jawab" required>
-            </div>
-        </div>
-        <div class="form-floating" style="width: 250px; margin-bottom:30px ;">
-            <div>
-                <label for="p4"><?= $_POST["q4"]; ?></label>
-                <input id="p4" class="form-control" type="text" name="j4"  placeholder="Jawab" required>
-            </div>
-        </div>
-        <button class="btn-primary" type="submit" name="jawab" style="margin-top: 50px;">Buat Form</button>
+    
+    <label>Berapa Jumlah Pertanyaan yang ingin dibuat</label>    
+    <input style="width: 80px;" class=form-control type="text" name ="jumlah" autocomplete="off" required>
+    <button class="btn-warning" type="submit" name="tambah" style="margin-top: 10px;">Tambah</button>
+    </div>
+    </form>
+    <br>
+    <form action="" method="POST">
+    <div style="margin-left: 40%;">
+    <?php for($i=0; $i < $jumlah;$i++) : ?>
+        <div style="width: 300px;">
+        <label>Pertanyaan <?= $i+1 ?></label>
+        <input class=form-control type="text" name ="question[]" placeholder="Masukan pertanyan anda" autocomplete="off" required>
+        <div>
+
+    <?php endfor; ?>
+    </div>
+    <br>
+    <button class="btn btn-danger" type="submit" name="submit">Simpan</button>
     </form>
 </body>
 </html>

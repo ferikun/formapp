@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 19 Jul 2022 pada 21.46
+-- Waktu pembuatan: 01 Agu 2022 pada 09.35
 -- Versi server: 10.4.14-MariaDB
 -- Versi PHP: 7.2.34
 
@@ -34,32 +34,15 @@ CREATE TABLE `akun` (
   `password` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data untuk tabel `akun`
---
-
-INSERT INTO `akun` (`id`, `nama`, `username`, `password`) VALUES
-(1, 'admin', 'admin', '12345'),
-(2, 'Feri Hermawan', 'feri', '160100'),
-(3, 'Imam', 'imam', '12345'),
-(4, 'Imam', 'imam', '12345'),
-(9, 'Aldho Yunatama', 'aldho', '12345'),
-(10, 'Aldho', 'aldo', '12345'),
-(11, 'Iqbal', 'ibal', '12345'),
-(12, 'Deni', 'den', '1234');
-
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `pertanyaan`
+-- Struktur dari tabel `form`
 --
 
-CREATE TABLE `pertanyaan` (
+CREATE TABLE `form` (
   `id` int(11) NOT NULL,
-  `p1` varchar(100) NOT NULL,
-  `p2` varchar(100) NOT NULL,
-  `p3` varchar(100) NOT NULL,
-  `p4` varchar(100) NOT NULL
+  `name_form` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -70,18 +53,23 @@ CREATE TABLE `pertanyaan` (
 
 CREATE TABLE `question` (
   `id` int(11) NOT NULL,
-  `q1` varchar(100) NOT NULL,
-  `q2` varchar(100) NOT NULL,
-  `q3` varchar(100) NOT NULL,
-  `q4` varchar(100) NOT NULL
+  `form_id` int(11) NOT NULL,
+  `question_name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data untuk tabel `question`
+-- Struktur dari tabel `respon`
 --
 
-INSERT INTO `question` (`id`, `q1`, `q2`, `q3`, `q4`) VALUES
-(19, 'Feri', '22', 'Bantarkawung', 'feri@gmail.com');
+CREATE TABLE `respon` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `formId_question` int(11) NOT NULL,
+  `question_id` int(11) NOT NULL,
+  `answer` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Indexes for dumped tables
@@ -94,16 +82,26 @@ ALTER TABLE `akun`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `pertanyaan`
+-- Indeks untuk tabel `form`
 --
-ALTER TABLE `pertanyaan`
+ALTER TABLE `form`
   ADD PRIMARY KEY (`id`);
 
 --
 -- Indeks untuk tabel `question`
 --
 ALTER TABLE `question`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `form_id` (`form_id`);
+
+--
+-- Indeks untuk tabel `respon`
+--
+ALTER TABLE `respon`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `question_id` (`question_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `formId_question` (`formId_question`);
 
 --
 -- AUTO_INCREMENT untuk tabel yang dibuang
@@ -113,19 +111,43 @@ ALTER TABLE `question`
 -- AUTO_INCREMENT untuk tabel `akun`
 --
 ALTER TABLE `akun`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT untuk tabel `pertanyaan`
+-- AUTO_INCREMENT untuk tabel `form`
 --
-ALTER TABLE `pertanyaan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `form`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT untuk tabel `question`
 --
 ALTER TABLE `question`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+
+--
+-- AUTO_INCREMENT untuk tabel `respon`
+--
+ALTER TABLE `respon`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=201;
+
+--
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+--
+
+--
+-- Ketidakleluasaan untuk tabel `question`
+--
+ALTER TABLE `question`
+  ADD CONSTRAINT `question_ibfk_1` FOREIGN KEY (`form_id`) REFERENCES `form` (`id`);
+
+--
+-- Ketidakleluasaan untuk tabel `respon`
+--
+ALTER TABLE `respon`
+  ADD CONSTRAINT `respon_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`),
+  ADD CONSTRAINT `respon_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `akun` (`id`),
+  ADD CONSTRAINT `respon_ibfk_3` FOREIGN KEY (`formId_question`) REFERENCES `question` (`form_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

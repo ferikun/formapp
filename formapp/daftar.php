@@ -10,6 +10,9 @@ if(isset($_POST["submit"])){
 
     if(mysqli_affected_rows($conn) === 1){
         $regist = true;
+        echo "<script>
+            alert('Anda Berhasil Mendaftar, silahkan mauk ke halaman login!');
+        </script>";
         
     }
 }
